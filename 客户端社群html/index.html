@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>社群管理 C 端 · 高保真还原索引</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  body { display: block; padding: 40px 20px 60px; }
+  .idx { max-width: 1080px; margin: 0 auto; }
+  .idx__hd { margin-bottom: 26px; }
+  .idx__hd h1 { font-size: 24px; font-weight: 700; color: var(--c-text); }
+  .idx__hd p { margin-top: 8px; font-size: 14px; color: var(--c-text-3); }
+  .idx__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+  .idx__card {
+    background: #fff; border-radius: var(--r-lg);
+    box-shadow: var(--sd-card); overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .idx__card:hover { transform: translateY(-3px); box-shadow: var(--sd-float); }
+  .idx__thumb {
+    aspect-ratio: 375 / 700;
+    background: linear-gradient(160deg, #16375F 0%, #2E7BE8 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 34px; font-weight: 800; letter-spacing: 1px;
+  }
+  .idx__meta { padding: 12px 14px 14px; }
+  .idx__no { font-size: 12px; color: var(--c-primary); font-weight: 600; }
+  .idx__name { margin-top: 4px; font-size: 14px; font-weight: 600; color: var(--c-text); line-height: 1.4; }
+  .idx__go { margin-top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--c-text-2); }
+  .idx__go svg { width: 12px; height: 12px; }
+  .idx__note {
+    margin-top: 30px; padding: 18px 20px;
+    background: #fff; border-radius: var(--r-lg);
+    border-left: 3px solid var(--c-primary);
+    font-size: 13px; color: var(--c-text-2); line-height: 1.8;
+  }
+  .idx__note h2 { font-size: 15px; color: var(--c-text); margin-bottom: 8px; }
+  .idx__note code { background: #F4F5F7; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="idx">
+  <header class="idx__hd">
+    <h1>社群管理 · C 端客户端 — 高保真 HTML 还原</h1>
+    <p>8 个页面入口 · 含已加入社群主页 · 375pt 基准 · 390 / 375 / 360 / 320px 响应式布局</p>
+  </header>
+
+  <div class="idx__grid">
+    <a class="idx__card" href="1.客户端社群主页.html">
+      <div class="idx__thumb">01</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 01</p><p class="idx__name">客户端社群主页</p>
+        <span class="idx__go">主理人 + 管理员头像墙，点击展开 →</span></div>
+    </a>
+    <a class="idx__card" href="1.客户端社群主页.html">
+      <div class="idx__thumb">02</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 02</p><p class="idx__name">客户端社群主页 · 查看公告（已并入主页公告栏弹层）</p>
+        <span class="idx__go">在主页点「公告栏」查看 →</span></div>
+    </a>
+    <a class="idx__card" href="3.客户端社群主页-生成社群海报含入群邀请码.html">
+      <div class="idx__thumb">03</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 03</p><p class="idx__name">生成社群海报（含入群邀请码）</p>
+        <span class="idx__go">查看页面 →</span></div>
+    </a>
+    <a class="idx__card" href="4.通过社群查看关联的社群活动.html">
+      <div class="idx__thumb">04</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 04</p><p class="idx__name">通过社群查看关联的社群活动</p>
+        <span class="idx__go">查看页面 →</span></div>
+    </a>
+    <a class="idx__card" href="5.客户端社群主页-查看主理人介绍.html">
+      <div class="idx__thumb">05</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 05</p><p class="idx__name">客户端社群主页 · 查看主理人介绍</p>
+        <span class="idx__go">查看页面 →</span></div>
+    </a>
+    <a class="idx__card" href="6.客户端社群主页-查看群成员.html">
+      <div class="idx__thumb">06</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 06</p><p class="idx__name">客户端社群主页 · 查看群成员</p>
+        <span class="idx__go">查看页面 →</span></div>
+    </a>
+    <a class="idx__card" href="7.客户端社群主页-加入社群.html">
+      <div class="idx__thumb">07</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 07</p><p class="idx__name">客户端社群主页 · 加入社群</p>
+        <span class="idx__go">查看页面 →</span></div>
+    </a>
+    <a class="idx__card" href="8.客户端社群主页-已加入社群.html">
+      <div class="idx__thumb">08</div>
+      <div class="idx__meta"><p class="idx__no">SCREEN 08</p><p class="idx__name">客户端社群主页 · 已加入社群</p>
+        <span class="idx__go">公告栏 / 邀请双入口，成员列表可退出 →</span></div>
+    </a>
+  </div>
+
+  <section class="idx__note">
+    <h2>还原说明</h2>
+    共享样式位于 <code>theme.css</code>（设计 token + 组件），图标精灵位于 <code>icons.js</code>，图片素材位于 <code>assets/</code>。<br>
+    照片素材均直接从设计稿截图中无损裁切复用；所有照片中烘焙的界面文字与控件已剔除或遮罩处理。<br>
+    页面间已串联真实跳转：主理人卡片 → 主理人介绍、成员卡片 → 群成员、更多活动 → 活动列表；底部「加入 / 海报」跳独立页，公告栏与成员/主理人在主页内以弹层展开。
+  </section>
+</div>
+<script src="icons.js"></script>
+</body>
+</html>

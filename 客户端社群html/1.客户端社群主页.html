@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>客户端社群主页</title>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body class="one-community one-community--home">
+<div class="stage">
+<div class="phone">
+
+  <!-- ============ 顶部：封面 + 导航 ============ -->
+  <header>
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="statusbar__icons">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.6" y="5.4" width="3" height="5.6" rx="1"/><rect x="9.2" y="3" width="3" height="8" rx="1"/><rect x="13.8" y="0" width="3" height="11" rx="1" opacity=".4"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1 4.1a10 10 0 0 1 14 0"/><path d="M3.6 6.8a6.4 6.4 0 0 1 8.8 0"/><circle cx="8" cy="9.6" r=".9" fill="currentColor" stroke="none"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="21" height="10.8" rx="3" stroke="currentColor" stroke-opacity=".45" stroke-width="1.1"/><rect x="2.2" y="2.2" width="16.6" height="7.6" rx="1.8" fill="currentColor"/><path d="M23.2 4.1v3.8c.9-.3 1.4-.9 1.4-1.9s-.5-1.6-1.4-1.9Z" fill="currentColor" fill-opacity=".45"/></svg>
+      </span>
+    </div>
+
+    <nav class="navbar">
+      <button class="navbar__back" aria-label="返回"><svg width="20" height="20" viewBox="0 0 20 20"><use href="#i-back"/></svg></button>
+      <h1 class="navbar__title">社群主页</h1>
+      <div class="capsule">
+        <span class="capsule__dots"><i></i><i></i><i></i></span>
+        <span class="capsule__div"></span>
+        <span class="capsule__target">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#18191C" stroke-width="1.5"><circle cx="10" cy="10" r="7.6"/><circle cx="10" cy="10" r="3.4" fill="#18191C" stroke="none"/></svg>
+        </span>
+      </div>
+    </nav>
+
+    <div class="hero" style="background-image:url('assets/hero.jpg')">
+      <div class="hero__inner">
+        <div class="hero__logo"><img src="assets/logo.jpg" alt="招商玺邻里社群"></div>
+        <h2 class="hero__name">招商玺飞盘社</h2>
+        <p class="hero__sub">举办了12场活动</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 主理人 / 管理员 · 成员 ============ -->
+  <section class="info-row">
+    <article class="team-card team-card--host" id="teamCard">
+      <div class="team-card__head">
+        <span class="team-card__title">主理人 <em>· 5</em></span>
+        <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+      </div>
+      <div class="host-strip">
+        <div class="host-item">
+          <span class="host-item__ava">
+            <img src="assets/avatar-host.jpg" alt="谢广坤">
+            <span class="role-pill role-pill--host">主理人</span>
+          </span>
+          <span class="host-item__name">谢广坤</span>
+        </div>
+        <div class="host-item">
+          <span class="host-item__ava">
+            <img src="assets/mem2.jpg" alt="李萌萌">
+            <span class="role-pill role-pill--admin">管理员</span>
+          </span>
+          <span class="host-item__name">李萌萌</span>
+        </div>
+        <div class="host-item">
+          <span class="host-item__ava">
+            <img src="assets/mem6.jpg" alt="王小锤">
+            <span class="role-pill role-pill--admin">管理员</span>
+          </span>
+          <span class="host-item__name">王小锤</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="team-card team-card--member" id="memberCard">
+      <div class="team-card__head">
+        <span class="team-card__title">成员 <em>· 112</em></span>
+        <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+      </div>
+      <div class="mem-stack">
+        <img src="assets/mem1.jpg" alt="">
+        <img src="assets/mem3.jpg" alt="">
+        <img src="assets/mem4.jpg" alt="">
+        <img src="assets/mem5.jpg" alt="">
+        <img src="assets/mem2.jpg" alt="">
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ Club 活动 ============ -->
+  <section class="panel">
+    <div class="sec-head">
+      <h3 class="sec-title">Club活动</h3>
+      <div class="sec-actions">
+        <button class="sec-btn"><svg viewBox="0 0 18 18"><use href="#i-search"/></svg>搜索</button>
+        <button class="sec-btn"><svg viewBox="0 0 18 18"><use href="#i-calendar"/></svg>日历</button>
+      </div>
+    </div>
+
+    <div class="date-row">
+      <div class="date-pill date-pill--on"><span class="date-pill__w">全部</span></div>
+      <div class="date-pill"><span class="date-pill__w">周一</span><span class="date-pill__d">13</span></div>
+      <div class="date-pill"><span class="date-pill__w">周二</span><span class="date-pill__d">14</span></div>
+      <div class="date-pill"><span class="date-pill__w">周三</span><span class="date-pill__d">15</span></div>
+      <div class="date-pill"><span class="date-pill__w">周四</span><span class="date-pill__d">16</span></div>
+      <div class="date-pill"><span class="date-pill__w">周五</span><span class="date-pill__d">17</span></div>
+    </div>
+
+    <div class="act-grid" id="actGrid">
+      <article class="act-card act-card--v">
+        <div class="act-card__media">
+          <img src="assets/act1.jpg" alt="周一飞盘局">
+        </div>
+        <h4 class="act-card__title">周一飞盘局</h4>
+        <div class="v-rows">
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-clock"/></svg><span class="v-row__text">07.13 周一 20:30</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-pin"/></svg><span class="v-row__text">14.9km</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-users"/></svg><span class="v-row__text">6人已上车 · 100人想去</span></div>
+        </div>
+        <hr class="v-divider">
+        <div class="v-foot">
+          <div class="v-foot__free"><span class="tag-free">免费</span></div>
+          <button class="btn-signup" type="button">立即报名</button>
+        </div>
+      </article>
+
+      <article class="act-card act-card--v">
+        <div class="act-card__media">
+          <img src="assets/act2.jpg" alt="周四飞盘局">
+        </div>
+        <h4 class="act-card__title">周四飞盘局</h4>
+        <div class="v-rows">
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-clock"/></svg><span class="v-row__text">07.16 周四 20:30</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-pin"/></svg><span class="v-row__text">18.1km</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-users"/></svg><span class="v-row__text">2人已上车 · 28人想去</span></div>
+        </div>
+        <hr class="v-divider">
+        <div class="v-foot">
+          <div class="v-foot__free"><span class="tag-free">免费</span></div>
+          <button class="btn-signup" type="button">立即报名</button>
+        </div>
+      </article>
+
+      <article class="act-card act-card--v" data-extra hidden>
+        <div class="act-card__media">
+          <img src="assets/act4_3.jpg" style="object-position:65% 50%" alt="新手友好体验场">
+        </div>
+        <h4 class="act-card__title">新手友好体验场</h4>
+        <div class="v-rows">
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-clock"/></svg><span class="v-row__text">08.02 周日 16:00</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-pin"/></svg><span class="v-row__text">12.6km</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-users"/></svg><span class="v-row__text">8人已报名 · 36人想去</span></div>
+        </div>
+        <hr class="v-divider">
+        <div class="v-foot">
+          <div class="v-foot__price">
+            <span class="v-price-label">现金价</span>
+            <span class="price">¥39<small>/人</small></span>
+            <span class="v-bean">可使用荟豆</span>
+          </div>
+          <button class="btn-signup" type="button">立即报名</button>
+        </div>
+      </article>
+
+      <article class="act-card act-card--v" data-extra hidden>
+        <div class="act-card__media">
+          <img src="assets/act4_4.jpg" style="object-position:65% 50%" alt="亲子飞盘体验课">
+        </div>
+        <h4 class="act-card__title">亲子飞盘体验课</h4>
+        <div class="v-rows">
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-clock"/></svg><span class="v-row__text">08.03 周一 15:00</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-pin"/></svg><span class="v-row__text">10.3km</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-users"/></svg><span class="v-row__text">10人已报名 · 24人想去</span></div>
+        </div>
+        <hr class="v-divider">
+        <div class="v-foot">
+          <div class="v-foot__price">
+            <span class="v-price-label">现金价</span>
+            <span class="price">¥29<small>/人</small></span>
+            <span class="v-bean">可使用荟豆</span>
+          </div>
+          <button class="btn-signup" type="button">立即报名</button>
+        </div>
+      </article>
+
+      <article class="act-card act-card--v" data-extra hidden>
+        <div class="act-card__media">
+          <img src="assets/act4_5.jpg" style="object-position:65% 50%" alt="夜光飞盘局">
+        </div>
+        <h4 class="act-card__title">夜光飞盘局</h4>
+        <div class="v-rows">
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-clock"/></svg><span class="v-row__text">08.09 周日 20:00</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-pin"/></svg><span class="v-row__text">15.2km</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-users"/></svg><span class="v-row__text">12人已报名 · 40人想去</span></div>
+        </div>
+        <hr class="v-divider">
+        <div class="v-foot">
+          <div class="v-foot__free"><span class="tag-free">免费</span></div>
+          <button class="btn-signup" type="button">立即报名</button>
+        </div>
+      </article>
+
+      <article class="act-card act-card--v" data-extra hidden>
+        <div class="act-card__media">
+          <img src="assets/act4_6.jpg" style="object-position:65% 50%" alt="飞盘基础训练">
+        </div>
+        <h4 class="act-card__title">飞盘基础训练</h4>
+        <div class="v-rows">
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-clock"/></svg><span class="v-row__text">08.10 周一 09:00</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-pin"/></svg><span class="v-row__text">16.8km</span></div>
+          <div class="v-row"><svg viewBox="0 0 18 18"><use href="#i-users"/></svg><span class="v-row__text">6人已报名 · 20人想去</span></div>
+        </div>
+        <hr class="v-divider">
+        <div class="v-foot">
+          <div class="v-foot__price">
+            <span class="v-price-label">现金价</span>
+            <span class="price">¥39<small>/人</small></span>
+            <span class="v-bean">可使用荟豆</span>
+          </div>
+          <button class="btn-signup" type="button">立即报名</button>
+        </div>
+      </article>
+    </div>
+
+    <button class="more-row act-expand" id="actExpand" type="button">
+      <span id="actExpandText">展开全部活动</span>
+      <svg viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+    </button>
+  </section>
+
+  <!-- ============ Club 瞬间 ============ -->
+  <section style="padding:0 12px;">
+    <h3 class="sec-title" style="margin-top:16px;">Club瞬间</h3>
+  </section>
+  <div class="moment-grid">
+    <a class="moment" href="#"><img src="assets/moment1.jpg" alt="瞬间 68"></a>
+    <a class="moment" href="#"><img src="assets/moment2.jpg" alt="瞬间 101"></a>
+    <a class="moment" href="#"><img src="assets/moment3.jpg" alt="瞬间 87"></a>
+    <a class="moment" href="#"><img src="assets/moment4.jpg" alt="瞬间 74"></a>
+    <a class="moment" href="#"><img src="assets/moment5.jpg" alt="瞬间 95"></a>
+    <a class="moment" href="#"><img src="assets/moment6.jpg" alt="瞬间 63"></a>
+    <a class="moment" href="#"><img src="assets/moment7.jpg" alt="瞬间 112"></a>
+    <a class="moment" href="#"><img src="assets/moment8.jpg" alt="瞬间 90"></a>
+    <a class="moment" href="#"><img src="assets/moment9.jpg" alt="瞬间 128"></a>
+  </div>
+  <a class="more-row" href="#" style="margin-bottom:6px;">全部瞬间<svg viewBox="0 0 14 14"><use href="#i-chev-right"/></svg></a>
+
+  <!-- ============ 底部操作条 ============ -->
+  <footer class="actionbar">
+    <div class="actionbar__inner">
+      <button class="action-item" id="noticeEntry" type="button">
+        <svg viewBox="0 0 22 22"><use href="#i-bubble"/></svg>公告栏
+      </button>
+      <a class="action-item action-item--join" id="membershipEntry" href="7.客户端社群主页-加入社群.html">
+        <svg viewBox="0 0 22 22"><use href="#i-user-plus"/></svg><span>加入</span>
+      </a>
+      <a class="action-item" href="3.客户端社群主页-生成社群海报含入群邀请码.html">
+        <svg viewBox="0 0 22 22"><use href="#i-share"/></svg>邀请
+      </a>
+    </div>
+  </footer>
+
+  <!-- ============ 主理人 + 管理员 展开弹层 ============ -->
+  <div class="mask mask--fixed" id="teamMask" hidden></div>
+  <section class="sheet sheet--fixed" id="teamSheet" hidden aria-label="主理人与管理员">
+    <div class="sheet__grip"></div>
+    <button class="sheet__close" id="teamClose" aria-label="关闭">
+      <svg viewBox="0 0 16 16" style="color:var(--c-text-2)"><use href="#i-close"/></svg>
+    </button>
+    <div class="sheet__body">
+      <h2 class="sheet__title">主理人与管理员</h2>
+      <p class="sheet__desc">共 5 位 · 1 位主理人 · 4 位管理员</p>
+
+      <h3 class="member-group-title" style="margin-top:18px;">主理人 <span>1</span></h3>
+      <a class="member-card" href="5.客户端社群主页-查看主理人介绍.html">
+        <img class="member-row__avatar" style="width:44px;height:44px;" src="assets/avatar-host.jpg" alt="谢广坤">
+        <div class="member-card__info">
+          <div class="member-name-row"><span>谢广坤</span><span class="role-tag role-tag--host">主理人</span></div>
+          <div class="member-card__desc">招商玺飞盘社创始人<small>已发起 42 场活动 · 累计 1260 人次参与</small></div>
+        </div>
+        <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+      </a>
+
+      <h3 class="member-group-title" style="margin-top:16px;">管理员 <span>4</span></h3>
+      <div class="member-list">
+        <a class="member-row" href="#">
+          <img class="member-row__avatar" src="assets/mem2.jpg" alt="李萌萌">
+          <div class="member-row__info">
+            <div class="member-name-row"><span>李萌萌</span><span class="role-tag role-tag--admin">管理员</span></div>
+            <div class="member-row__desc">负责活动报名与现场签到</div>
+          </div>
+          <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+        </a>
+        <a class="member-row" href="#">
+          <img class="member-row__avatar" src="assets/mem6.jpg" alt="王小锤">
+          <div class="member-row__info">
+            <div class="member-name-row"><span>王小锤</span><span class="role-tag role-tag--admin">管理员</span></div>
+            <div class="member-row__desc">负责场地预定与器材管理</div>
+          </div>
+          <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+        </a>
+        <a class="member-row" href="#">
+          <img class="member-row__avatar" src="assets/mem3.jpg" alt="陈嘉一">
+          <div class="member-row__info">
+            <div class="member-name-row"><span>陈嘉一</span><span class="role-tag role-tag--admin">管理员</span></div>
+            <div class="member-row__desc">负责社群内容发布与瞬间审核</div>
+          </div>
+          <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+        </a>
+        <a class="member-row" href="#">
+          <img class="member-row__avatar" src="assets/mem4.jpg" alt="顾南舟">
+          <div class="member-row__info">
+            <div class="member-name-row"><span>顾南舟</span><span class="role-tag role-tag--admin">管理员</span></div>
+            <div class="member-row__desc">负责新人入群引导与秩序维护</div>
+          </div>
+          <svg class="chevron" viewBox="0 0 14 14"><use href="#i-chev-right"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 公告栏 · 全部列表（默认展示全部，下滑查看） ============ -->
+  <div class="mask mask--fixed" id="noticeMask" hidden></div>
+  <section class="sheet sheet--fixed" id="noticeSheet" hidden aria-label="公告栏">
+    <div class="sheet__grip"></div>
+    <button class="sheet__close" id="noticeClose" aria-label="关闭">
+      <svg viewBox="0 0 16 16" style="color:var(--c-text-2)"><use href="#i-close"/></svg>
+    </button>
+    <div class="sheet__body">
+      <h2 class="sheet__title">公告栏<span class="pill-count" id="noticePill">3 条未读</span></h2>
+      <p class="sheet__desc">及时了解社群活动与重要通知，向下滑动查看全部公告</p>
+
+      <article class="notice-pinned notice-clickable" data-full="各位邻居好：受场地维护影响，7月16日（周四）飞盘局地点调整至招商玺中央草坪 2 号场，集合时间由 20:00 提前至 19:30，请已报名的邻居留意时间变化。如因调整无法参加，可在活动开始前取消报名，荟豆与名额将自动退回。">
+        <span class="tag-important">置顶 · 重要</span>
+        <img class="notice-pinned__logo" src="assets/logo.jpg" alt="招商玺飞盘社">
+        <h3 class="notice-pinned__title">周四飞盘局场地调整<span class="dot-unread"></span></h3>
+        <p class="notice-pinned__text">受场地维护影响，7月16日周四飞盘局调整至招商玺中央草坪2号场，集合时间改为19:30。</p>
+        <p class="notice-pinned__meta">今天 18:30 · 主理人 谢广坤</p>
+      </article>
+
+      <h3 class="sub-title">全部公告</h3>
+      <div class="notice-list">
+        <article class="notice-item notice-clickable" data-full="7月活动报名已开启！本月新增 3 场飞盘活动：周一飞盘局（07.13 20:30）、周四飞盘局（07.16 20:30）、新手友好体验场（08.02 16:00）。报名入口在 Club 活动卡片，可使用荟豆抵扣，欢迎邻居们带家人一起参加。">
+          <div class="notice-item__main">
+            <h4 class="notice-item__title"><span class="dot-unread"></span>7月活动报名开启</h4>
+            <p class="notice-item__desc">本月新增3场飞盘活动，欢迎邻居报名参加</p>
+          </div>
+          <span class="notice-item__date">07-13</span>
+        </article>
+        <article class="notice-item notice-clickable" data-full="欢迎新邻居加入招商玺飞盘社。入群后请留意：① 活动报名后如需取消，请提前 2 小时在详情页操作；② 现场签到请出示报名二维码；③ 社群内交流请遵守文明用语，禁止广告与拉票。">
+          <div class="notice-item__main">
+            <h4 class="notice-item__title"><span class="dot-unread"></span>新成员入群须知</h4>
+            <p class="notice-item__desc">活动报名、签到及社群交流规则说明</p>
+          </div>
+          <span class="notice-item__date">07-10</span>
+        </article>
+        <article class="notice-item notice-clickable" data-full="夏季装备领取通知：本月报名并签到满 2 场的邻居，可在周四活动现场领取社群定制速干毛巾一条，凭签到记录领取，数量有限先到先得。">
+          <div class="notice-item__main">
+            <h4 class="notice-item__title">夏季装备领取通知</h4>
+            <p class="notice-item__desc">签到满2场可领取社群定制速干毛巾</p>
+          </div>
+          <span class="notice-item__date">07-08</span>
+        </article>
+        <article class="notice-item notice-clickable" data-full="社群公约已更新，新增两条约定：活动开始前 2 小时内取消报名需提前告知主理人；未成年人参加需由监护人陪同并在报名时备注。完整公约可在社群主页查看。">
+          <div class="notice-item__main">
+            <h4 class="notice-item__title">社群公约更新</h4>
+            <p class="notice-item__desc">新增取消报名与未成年人陪同约定</p>
+          </div>
+          <span class="notice-item__date">07-05</span>
+        </article>
+        <article class="notice-item notice-clickable" data-full="6月回顾：全月共举办 4 场飞盘活动，累计 96 人次参与，新增成员 18 位。感谢每一位到场的邻居，7月我们继续在中央草坪见！">
+          <div class="notice-item__main">
+            <h4 class="notice-item__title">6月活动回顾</h4>
+            <p class="notice-item__desc">4场活动 · 96人次参与 · 新增成员18位</p>
+          </div>
+          <span class="notice-item__date">07-01</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 公告详情弹窗（点击公告弹出，关闭后标记已读） ============ -->
+  <div class="mask mask--fixed mask--dialog" id="detailMask" hidden></div>
+  <div class="dialog" id="noticeDialog" hidden role="dialog" aria-label="公告详情">
+    <h3 class="dialog__title" id="dialogTitle">公告标题</h3>
+    <div class="dialog__body" id="dialogBody">公告正文</div>
+    <button class="btn-primary btn-primary--dialog" id="dialogOk" type="button">知道了</button>
+  </div>
+  <div class="membership-toast" id="membershipToast" role="status" hidden>已退出社群</div>
+
+</div>
+</div>
+
+<script src="icons.js"></script>
+<script>
+  function syncMembership() {
+    if (sessionStorage.getItem('huiyoujia-frisbee-membership') === 'joined') {
+      location.replace('8.客户端社群主页-已加入社群.html');
+      return;
+    }
+    document.querySelector('#memberCard .team-card__title em').textContent = '· 111';
+  }
+  window.addEventListener('pageshow', function () {
+    syncMembership();
+    if (sessionStorage.getItem('huiyoujia-frisbee-exit-notice') === '1') {
+      sessionStorage.removeItem('huiyoujia-frisbee-exit-notice');
+      var toast = document.getElementById('membershipToast');
+      toast.hidden = false;
+      window.setTimeout(function () { toast.hidden = true; }, 2500);
+    }
+  });
+  syncMembership();
+
+  // 主理人 / 管理员卡片 → 展开全部主理人 + 管理员
+  var teamCard  = document.getElementById('teamCard');
+  var teamSheet = document.getElementById('teamSheet');
+  var teamMask  = document.getElementById('teamMask');
+
+  function openTeam() {
+    document.body.style.overflow = 'hidden';
+    teamMask.hidden = false;
+    teamSheet.hidden = false;
+    // 重新触发上滑动画
+    teamSheet.style.animation = 'none';
+    void teamSheet.offsetWidth;
+    teamSheet.style.animation = '';
+  }
+  function closeTeam() {
+    document.body.style.overflow = '';
+    teamMask.hidden = true;
+    teamSheet.hidden = true;
+  }
+
+  teamCard.addEventListener('click', openTeam);
+  teamMask.addEventListener('click', closeTeam);
+  document.getElementById('teamClose').addEventListener('click', closeTeam);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !teamSheet.hidden) closeTeam();
+  });
+
+  // 成员卡片 → 群成员
+  document.getElementById('memberCard').addEventListener('click', function () {
+    location.href = '6.客户端社群主页-查看群成员.html';
+  });
+
+  // Club 活动 · 展开全部 / 收起
+  var actExpand = document.getElementById('actExpand');
+  var actExtra  = document.querySelectorAll('.act-card--v[data-extra]');
+  actExpand.addEventListener('click', function () {
+    var isOpen = actExpand.classList.contains('is-open');
+    actExtra.forEach(function (card) { card.hidden = isOpen; });
+    actExpand.classList.toggle('is-open', !isOpen);
+    document.getElementById('actExpandText').textContent = isOpen ? '展开全部活动' : '收起';
+  });
+
+  // ============ 公告栏 ============
+  var noticeEntry  = document.getElementById('noticeEntry');
+  var noticeSheet  = document.getElementById('noticeSheet');
+  var noticeMask   = document.getElementById('noticeMask');
+  var detailMask   = document.getElementById('detailMask');
+  var noticeDialog = document.getElementById('noticeDialog');
+  var noticePill   = document.getElementById('noticePill');
+  var currentItem  = null;
+
+  function updateUnread() {
+    var n = noticeSheet.querySelectorAll('.dot-unread').length;
+    noticePill.textContent = n ? n + ' 条未读' : '全部已读';
+  }
+
+  function openNotice() {
+    document.body.style.overflow = 'hidden';
+    noticeMask.hidden = false;
+    noticeSheet.hidden = false;
+    noticeSheet.style.animation = 'none';
+    void noticeSheet.offsetWidth;
+    noticeSheet.style.animation = '';
+  }
+  function closeNotice() {
+    document.body.style.overflow = '';
+    noticeMask.hidden = true;
+    noticeSheet.hidden = true;
+  }
+
+  function openDetail(item) {
+    currentItem = item;
+    document.getElementById('dialogTitle').textContent = item.querySelector('.notice-pinned__title, .notice-item__title').textContent.trim();
+    document.getElementById('dialogBody').textContent = item.dataset.full || '';
+    detailMask.hidden = false;
+    noticeDialog.hidden = false;
+  }
+  function closeDetail() {
+    if (currentItem) {
+      var dot = currentItem.querySelector('.dot-unread');
+      if (dot) dot.remove();
+      currentItem.classList.add('is-read');
+      updateUnread();
+      currentItem = null;
+    }
+    detailMask.hidden = true;
+    noticeDialog.hidden = true;
+  }
+
+  noticeEntry.addEventListener('click', openNotice);
+  noticeMask.addEventListener('click', closeNotice);
+  document.getElementById('noticeClose').addEventListener('click', closeNotice);
+
+  noticeSheet.querySelectorAll('.notice-clickable').forEach(function (item) {
+    item.addEventListener('click', function () { openDetail(item); });
+  });
+
+  document.getElementById('dialogOk').addEventListener('click', closeDetail);
+  detailMask.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!noticeDialog.hidden) closeDetail();
+    else if (!noticeSheet.hidden) closeNotice();
+  });
+</script>
+</body>
+</html>
