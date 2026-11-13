@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>荟友家 · 原型入口</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #F4F6F9; color: #1F2329; padding: 60px 20px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 24px; font-weight: 700; }
+  .sub { margin-top: 8px; font-size: 14px; color: #8F959E; }
+  .list { margin-top: 28px; display: grid; gap: 16px; }
+  a.card {
+    display: block; padding: 22px 24px; background: #fff; border-radius: 12px;
+    text-decoration: none; color: inherit;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    border-left: 4px solid #2E7BE8;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  a.card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+  .card h2 { font-size: 17px; font-weight: 600; }
+  .card p { margin-top: 6px; font-size: 13px; color: #646A73; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>荟友家原型</h1>
+  <p class="sub">点击进入对应端的原型</p>
+  <div class="list">
+    <a class="card" href="./主理人端原型-合并版.html">
+      <h2>主理人端</h2>
+      <p>主理人中心、申请、发布活动、活动管理、社群管理等合并串讲版</p>
+    </a>
+    <a class="card" href="./客户端社群html/index.html">
+      <h2>客户端 · 社群</h2>
+      <p>社群主页、公告、海报、关联活动、主理人介绍、群成员、加入社群</p>
+    </a>
+  </div>
+</div>
+</body>
+</html>
