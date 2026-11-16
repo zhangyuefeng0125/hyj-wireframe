@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>活动签到·扫码原型</title>
+<style>
+  :root{
+    --blue:#2E6BE6;
+    --blue-deep:#1F56C4;
+    --blue-light:#EEF4FF;
+    --blue-faint:#F5F9FF;
+    --green:#26A862;
+    --green-bg:#EAF9F1;
+    --orange:#E87A2E;
+    --orange-bg:#FFF6ED;
+    --red:#E5484D;
+    --text:#1F2329;
+    --sub:#646A73;
+    --faint:#969BA1;
+    --bg:#F5F6F8;
+    --line:#F0F1F3;
+    --radius:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  html,body{background:#E9EAEE;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color:var(--text);
+    display:flex;justify-content:center;
+  }
+  .page{width:375px;max-width:100%;background:var(--bg);min-height:100vh;position:relative;overflow-x:hidden;}
+  .screen{display:none;min-height:100vh;flex-direction:column;}
+  .screen.on{display:flex;}
+
+  /* ========== 状态栏 ========== */
+  .statusbar{
+    height:44px;background:#fff;display:flex;align-items:center;
+    padding:0 14px 0 20px;font-size:13px;font-weight:600;color:#111;
+    position:relative;z-index:5;flex:none;
+  }
+  .statusbar.dark{background:rgba(0,0,0,0);color:#fff;}
+  .sb-left{display:flex;align-items:center;gap:5px;}
+  .sb-right{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;}
+
+  /* ========== 导航栏 ========== */
+  .navbar{
+    height:44px;background:#fff;display:flex;align-items:center;
+    padding:0 10px;position:relative;z-index:5;flex:none;
+  }
+  .navbar.dark{background:rgba(0,0,0,0);color:#fff;}
+  .nav-back{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .nav-title{position:absolute;left:50%;transform:translateX(-50%);font-size:16px;font-weight:600;}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+
+  /* ========== 扫一扫 ========== */
+  #screen-scan{background:#0E1319;}
+  .camera{
+    flex:1;position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse 130% 60% at 70% -12%, rgba(93,146,104,.55), rgba(0,0,0,0) 60%),
+      radial-gradient(ellipse 90% 45% at 15% 100%, rgba(52,86,66,.5), rgba(0,0,0,0) 55%),
+      linear-gradient(175deg,#1A2A1E 0%,#101820 55%,#0A0F13 100%);
+  }
+  /* 被扫对象：摆在现场的签到码立牌 */
+  .venue-board{
+    position:absolute;left:50%;top:11%;transform:translateX(-50%) rotate(-2deg);
+    width:158px;background:#fff;border-radius:8px;padding:10px 10px 9px;
+    box-shadow:0 8px 26px rgba(0,0,0,.45);
+  }
+  .venue-board .vb-tag{
+    font-size:9px;font-weight:600;color:var(--blue);letter-spacing:1px;margin-bottom:6px;
+  }
+  .venue-board .vb-title{font-size:10px;font-weight:600;color:#1F2329;line-height:1.35;margin-bottom:7px;}
+  .qr-mock{
+    width:100%;aspect-ratio:1/1;border-radius:4px;
+    background:
+      repeating-linear-gradient(90deg,#1F2329 0 5px,#fff 5px 10px),
+      repeating-linear-gradient(0deg,#1F2329 0 5px,#fff 5px 10px);
+    background-blend-mode:multiply;
+  }
+  .venue-board .vb-org{margin-top:7px;font-size:8.5px;color:#8A9098;text-align:center;}
+  .viewfinder{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);
+    width:236px;height:236px;cursor:pointer;
+  }
+  .vf-corner{position:absolute;width:26px;height:26px;border:3px solid #fff;}
+  .vf-corner.tl{left:0;top:0;border-right:none;border-bottom:none;border-radius:6px 0 0 0;}
+  .vf-corner.tr{right:0;top:0;border-left:none;border-bottom:none;border-radius:0 6px 0 0;}
+  .vf-corner.bl{left:0;bottom:0;border-right:none;border-top:none;border-radius:0 0 0 6px;}
+  .vf-corner.br{right:0;bottom:0;border-left:none;border-top:none;border-radius:0 0 6px 0;}
+  .vf-scanline{
+    position:absolute;left:12px;right:12px;top:14px;height:2.5px;border-radius:2px;
+    background:linear-gradient(90deg,rgba(46,107,230,0),#4D8BF0 22%,#7DB5FF 50%,#4D8BF0 78%,rgba(46,107,230,0));
+    box-shadow:0 0 14px rgba(90,150,255,.85);
+    animation:scan 2.4s ease-in-out infinite;
+  }
+  @keyframes scan{0%{top:14px}50%{top:218px}100%{top:14px}}
+  .scan-tips{
+    position:absolute;left:50%;top:calc(50% + 142px);transform:translateX(-50%);
+    text-align:center;color:#fff;width:300px;
+  }
+  .scan-tips .t1{font-size:15px;font-weight:600;letter-spacing:.5px;}
+  .scan-tips .t2{margin-top:7px;font-size:12px;color:rgba(255,255,255,.62);letter-spacing:.3px;}
+  .torch{
+    position:absolute;left:50%;bottom:118px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:7px;color:rgba(255,255,255,.85);
+  }
+  .torch .btn{
+    width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.28);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .torch .lb{font-size:11px;}
+
+  /* 演示控制条（原型专用，非产品界面） */
+  .demo-bar{
+    flex:none;background:#12181F;border-top:1px dashed rgba(255,255,255,.28);
+    padding:12px 14px 18px;position:relative;z-index:6;
+  }
+  .demo-bar .dt{font-size:11px;color:rgba(255,255,255,.55);margin-bottom:9px;letter-spacing:.5px;}
+  .demo-btns{display:flex;gap:8px;}
+  .demo-btn{
+    flex:1;appearance:none;border:1px solid #3D5A8F;background:#1B2A45;color:#BFD4F7;
+    font-size:11px;line-height:1.4;padding:9px 6px;border-radius:8px;cursor:pointer;
+    font-family:inherit;text-align:center;
+  }
+  .demo-btn:active{background:#243A63;}
+  .demo-btn b{display:block;color:#fff;font-size:12px;margin-bottom:2px;}
+
+  /* ========== 签到确认 ========== */
+  .confirm-body{flex:1;padding-bottom:96px;}
+  .banner{
+    margin:10px 10px 0;background:var(--green-bg);border:1px solid #BEE7CF;
+    border-radius:10px;padding:12px 12px;display:flex;align-items:center;gap:10px;
+  }
+  .banner .ck{
+    width:34px;height:34px;border-radius:50%;background:var(--green);flex:none;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .banner .bd{flex:1;min-width:0;}
+  .banner .bd .l1{font-size:14px;font-weight:600;color:#15804A;}
+  .banner .bd .l2{margin-top:2px;font-size:11px;color:#4E8A66;}
+  .banner .pill{
+    flex:none;font-size:11px;font-weight:600;color:var(--green);
+    background:#fff;border:1px solid #A9DCBE;border-radius:999px;padding:4px 9px;
+  }
+  .card{background:#fff;border-radius:var(--radius);margin:10px 10px 0;padding:14px 14px;}
+
+  /* 活动信息卡 */
+  .act-card{display:flex;gap:11px;}
+  .act-thumb{
+    width:62px;height:62px;border-radius:8px;flex:none;position:relative;overflow:hidden;
+    background:linear-gradient(150deg,#A5DB84 0%,#5FBE7C 48%,#2FA36B 100%);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .act-card .info{flex:1;min-width:0;}
+  .act-card .tags{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+  .tag{font-size:10px;line-height:1;padding:4px 6px;border-radius:3px;font-weight:500;flex:none;}
+  .tag-blue{background:var(--blue);color:#fff;}
+  .tag-plain{background:#F2F3F5;color:var(--sub);border:1px solid #E8EAED;}
+  .act-card h1{font-size:15px;font-weight:700;line-height:1.4;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .act-card .sub{margin-top:4px;font-size:11.5px;color:var(--sub);}
+
+  /* 区块标题 */
+  .sec-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;}
+  .sec-hd .tt{font-size:15px;font-weight:600;}
+  .sec-hd .more{font-size:11.5px;color:var(--orange);font-weight:500;}
+
+  /* 场次选择 */
+  .sess{position:relative;padding:12px 10px;border-radius:10px;cursor:pointer;margin-top:4px;}
+  .sess .row1{display:flex;align-items:center;gap:8px;}
+  .sess .time{font-size:14px;font-weight:600;flex:1;min-width:0;}
+  .mini-tag{flex:none;font-size:10px;font-weight:500;color:#fff;background:var(--blue);border-radius:3px;padding:2.5px 5px;}
+  .mini-tag.wait{background:#E8A33D;}
+  .mini-tag.end{background:#C4C9CF;}
+  .mini-tag.done{background:#C4C9CF;}
+  .sess .row2{margin-top:3px;padding-left:27px;font-size:11.5px;color:var(--faint);display:flex;gap:12px;}
+  .sess .remain{font-size:11.5px;font-weight:600;color:var(--orange);flex:none;align-self:flex-start;}
+  .sess.off{cursor:default;}
+  .sess.off .time,.sess.off .row2{color:#B4B9C0;}
+  .sess.off .remain{color:#B4B9C0;font-weight:400;}
+  .sess.on{background:#F0F6FF;}
+  .sess.on::before{content:'';position:absolute;left:0;top:11px;bottom:11px;width:3px;background:var(--blue);border-radius:0 2px 2px 0;}
+  .radio{width:19px;height:19px;border-radius:50%;border:1.5px solid #C7CCD3;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;}
+  .sess.on .radio{border-color:var(--blue);}
+  .sess.on .radio::after{content:'';width:11px;height:11px;border-radius:50%;background:var(--blue);}
+  .sess.off .radio{border-color:#DFE2E6;background:#F5F6F8;}
+
+  /* 张数选择 */
+  .qty-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0 2px;}
+  .stepper{display:flex;align-items:center;gap:16px;}
+  .step-btn{
+    width:34px;height:34px;border-radius:50%;border:1.2px solid var(--blue);background:#fff;
+    color:var(--blue);font-size:20px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-family:inherit;
+  }
+  .step-btn:disabled{border-color:#D6DAE0;color:#C4C9CF;background:#F7F8FA;cursor:default;}
+  .qty-num{font-size:26px;font-weight:700;color:var(--blue);min-width:34px;text-align:center;}
+  .qty-unit{font-size:13px;color:var(--sub);}
+  .qty-calc{
+    margin-top:10px;background:var(--blue-faint);border-radius:8px;
+    padding:9px 12px;font-size:12px;color:var(--sub);display:flex;justify-content:space-between;align-items:center;
+  }
+  .qty-calc b{color:var(--blue);font-weight:600;}
+  .qty-calc .arr{color:var(--faint);margin:0 6px;}
+  .qty-note{margin-top:8px;font-size:11px;color:var(--faint);line-height:1.55;}
+  .qty-fixed{
+    margin-top:8px;background:var(--blue-faint);border-radius:8px;padding:11px 12px;
+    font-size:12.5px;color:var(--sub);display:flex;justify-content:space-between;
+  }
+  .qty-fixed b{color:var(--blue);}
+
+  /* 信息列表 */
+  .info-sec .sec-tt{font-size:14.5px;font-weight:600;margin-bottom:2px;}
+  .kv{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px;}
+  .kv:last-child{border-bottom:none;}
+  .kv .k{color:var(--sub);flex:none;}
+  .kv .v{color:var(--text);text-align:right;min-width:0;word-break:break-all;}
+  .kv .v.hl{color:var(--orange);font-weight:600;}
+
+  /* 警示条 */
+  .warn{
+    margin:10px 10px 0;background:var(--orange-bg);border:1px solid #F5DCBF;
+    border-radius:10px;padding:12px 13px;display:flex;gap:10px;
+  }
+  .warn .ic{flex:none;width:20px;height:20px;border-radius:50%;background:var(--orange);color:#fff;
+    font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .warn .w1{font-size:13px;font-weight:600;color:#B25414;}
+  .warn .w2{margin-top:3px;font-size:11.5px;color:#B97A48;line-height:1.6;}
+
+  /* 底部操作栏 */
+  .footbar{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:375px;max-width:100%;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);padding:10px 12px 26px;z-index:20;
+  }
+  .btn-primary{
+    width:100%;height:46px;border-radius:23px;border:none;background:var(--blue);color:#fff;
+    font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;
+    box-shadow:0 6px 16px rgba(46,107,230,.28);
+  }
+  .btn-primary:active{background:var(--blue-deep);}
+
+  /* ========== 成功弹窗 ========== */
+  .mask{
+    position:fixed;inset:0;background:rgba(15,20,26,.5);z-index:30;
+    display:none;align-items:flex-end;justify-content:center;
+  }
+  .mask.on{display:flex;}
+  .modal{
+    width:375px;max-width:100%;background:#fff;border-radius:18px 18px 0 0;
+    padding:22px 20px 30px;position:relative;
+    animation:up .28s ease-out;
+  }
+  @keyframes up{from{transform:translateY(48px);opacity:.4}to{transform:none;opacity:1}}
+  .modal .close{position:absolute;right:14px;top:14px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#9AA0A8;}
+  .modal .ck{width:58px;height:58px;border-radius:50%;background:var(--green);margin:4px auto 0;display:flex;align-items:center;justify-content:center;}
+  .modal .m-title{text-align:center;font-size:19px;font-weight:700;margin-top:13px;}
+  .modal .m-sub{text-align:center;font-size:12.5px;color:var(--sub);margin-top:5px;}
+  .m-summary{
+    margin-top:16px;background:var(--blue-light);border-radius:10px;padding:13px 16px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .m-summary .lb{font-size:13px;color:#4A5B7E;}
+  .m-summary .val{font-size:26px;font-weight:700;color:var(--blue);}
+  .m-summary .val small{font-size:13px;font-weight:500;color:#4A5B7E;margin-left:2px;}
+  .m-list{margin-top:14px;}
+  .m-list .kv{font-size:12.5px;padding:9px 0;}
+  .m-tip{
+    margin-top:12px;background:var(--blue-faint);border-radius:8px;padding:10px 12px;
+    display:flex;align-items:center;gap:8px;font-size:12px;color:#3E68A8;
+  }
+  .m-actions{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
+  .btn-ghost{
+    width:100%;height:40px;border-radius:20px;border:1px solid #D3D8E0;background:#fff;
+    color:var(--sub);font-size:14px;cursor:pointer;font-family:inherit;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== 屏幕1：扫一扫 ===== -->
+  <section class="screen" id="screen-scan">
+    <div class="statusbar dark">
+      <div class="sb-left"><span>20:12</span></div>
+      <div class="sb-right">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.3" y="6" width="3" height="6" rx="1"/><rect x="8.6" y="3.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2 1 4.4A4.6 4.6 0 0 1 8 1.1a4.6 4.6 0 0 1 7 3.3L8 11.2Z" opacity=".9"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="15" height="8" rx="1.8" fill="currentColor"/><rect x="22.8" y="3.6" width="2" height="4.8" rx="1" fill="currentColor" opacity=".45"/></svg>
+      </div>
+    </div>
+    <div class="navbar dark">
+      <div class="nav-back" onclick="go('scan')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 4 6.5 10l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="nav-title">扫一扫</div>
+      <div class="nav-right">
+        <svg width="21" height="21" viewBox="0 0 21 21" fill="none"><rect x="1" y="1" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="12" y="1" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="12" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M12.2 16h7.6M16 12.2v7.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="camera">
+      <div class="venue-board">
+        <div class="vb-tag">活动签到码</div>
+        <div class="vb-title">周四飞盘局｜新手友好体验场</div>
+        <div class="qr-mock"></div>
+        <div class="vb-org">招商蛇口 · 主办方现场摆放</div>
+      </div>
+      <div class="viewfinder" id="vf" title="点击模拟识别">
+        <div class="vf-corner tl"></div><div class="vf-corner tr"></div>
+        <div class="vf-corner bl"></div><div class="vf-corner br"></div>
+        <div class="vf-scanline"></div>
+      </div>
+      <div class="scan-tips">
+        <div class="t1">将活动现场的签到码放入框内</div>
+        <div class="t2">识别成功后将进入签到确认</div>
+      </div>
+      <div class="torch">
+        <div class="btn">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 2h6l.5 4.2a4 4 0 0 1-.9 2.8L12 10.5V17a2 2 0 0 1-4 0v-6.5L7.4 9A4 4 0 0 1 6.5 6.2L7 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 13.5v.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="lb">轻触照亮</div>
+      </div>
+      <div class="demo-bar" style="position:absolute;left:0;right:0;bottom:0;">
+        <div class="dt">原型演示：点击按钮模拟「识别到不同活动的签到码」</div>
+        <div class="demo-btns">
+          <button class="demo-btn" onclick="recognize('A')"><b>活动A · 周四飞盘局</b>多场次 · 共3张票</button>
+          <button class="demo-btn" onclick="recognize('B')"><b>活动B · 飞盘成长课</b>通用课程卡 · 10次卡</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 屏幕2：签到确认 ===== -->
+  <section class="screen" id="screen-confirm">
+    <div class="statusbar">
+      <div class="sb-left"><span>20:12</span></div>
+      <div class="sb-right">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.3" y="6" width="3" height="6" rx="1"/><rect x="8.6" y="3.5" width="3" height="8.5" rx="1"/><rect x="12.9" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2 1 4.4A4.6 4.6 0 0 1 8 1.1a4.6 4.6 0 0 1 7 3.3L8 11.2Z" opacity=".9"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="15" height="8" rx="1.8" fill="currentColor"/><rect x="22.8" y="3.6" width="2" height="4.8" rx="1" fill="currentColor" opacity=".45"/></svg>
+      </div>
+    </div>
+    <div class="navbar">
+      <div class="nav-back" onclick="backToScan()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 4 6.5 10l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="nav-title">签到确认</div>
+      <div class="nav-right"></div>
+    </div>
+
+    <div class="confirm-body" id="confirmBody"><!-- JS 渲染 --></div>
+
+    <div class="footbar">
+      <button class="btn-primary" id="btnConfirm" onclick="confirmCheckin()">确认并签到（1张）</button>
+    </div>
+  </section>
+
+  <!-- ===== 成功弹窗 ===== -->
+  <div class="mask" id="successMask">
+    <div class="modal">
+      <div class="close" onclick="finishAll()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="ck">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M8 15.5l5 5L23 10" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="m-title">签到成功</div>
+      <div class="m-sub" id="mSub">已成功核销 2 张票</div>
+      <div class="m-summary">
+        <span class="lb">本次签到</span>
+        <span class="val" id="mQty">2<small>张</small></span>
+      </div>
+      <div class="m-list" id="mList"><!-- JS 渲染 --></div>
+      <div class="m-tip">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#2E6BE6" opacity=".12"/><path d="M8 7.2v3.6M8 5v.01" stroke="#2E6BE6" stroke-width="1.8" stroke-linecap="round"/></svg>
+        签到结果已同步至你的账户，可在「我的票券」中查看
+      </div>
+      <div class="m-actions">
+        <button class="btn-primary" onclick="finishAll()">完成</button>
+        <button class="btn-ghost" id="btnContinue" onclick="continueCheckin()">继续签到（本场还剩 1 张）</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ================= 演示数据 ================= */
+var DATA = {
+  A:{
+    name:'周四飞盘局｜新手友好体验场',
+    statusTag:'进行中',
+    ticketType:'单场票 · 单人票',
+    orderNo:'HY20260718-06801',
+    valid:'2026-08-01 前有效',
+    multiSession:true,
+    sessions:[
+      {id:'s1',time:'7月18日 周六 17:00~19:00',loc:'招商蛇口·中央草坪',status:'open',remain:2},
+      {id:'s2',time:'7月25日 周六 17:00~19:00',loc:'招商蛇口·中央草坪',status:'open',remain:1},
+      {id:'s3',time:'8月1日 周六 17:00~19:00',loc:'招商蛇口·中央草坪',status:'wait',remain:0}
+    ]
+  },
+  B:{
+    name:'飞盘零基础成长课',
+    statusTag:'长期有效',
+    ticketType:'通用课程券 · 10次卡',
+    orderNo:'ONE-0718006801',
+    valid:'长期有效',
+    multiSession:false,
+    remain:10
+  }
+};
+
+var state = {act:null, sess:null, qty:1, scanTime:''};
+
+function fmtNow(){
+  var d = new Date();
+  function p(n){return (n<10?'0':'')+n;}
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+
+/* ================= 路由 ================= */
+function go(name){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('screen-'+name).classList.add('on');
+  if(name==='scan'){ state.act=null; }
+  window.scrollTo(0,0);
+}
+function backToScan(){ document.getElementById('successMask').classList.remove('on'); go('scan'); }
+function finishAll(){ backToScan(); }
+
+/* ================= 扫码识别 ================= */
+function recognize(actId){
+  state.act = JSON.parse(JSON.stringify(DATA[actId]));
+  state.actId = actId;
+  state.scanTime = fmtNow();
+  state.sess = null;
+  if(state.act.multiSession){
+    var first = state.act.sessions.find(function(s){return s.status==='open' && s.remain>0;});
+    state.sess = first ? first.id : null;
+  }
+  state.qty = 1;
+  renderConfirm();
+  go('confirm');
+}
+document.getElementById('vf').addEventListener('click', function(){ recognize('A'); });
+
+/* ================= 确认页渲染 ================= */
+function curSess(){ return state.act.multiSession ? state.act.sessions.find(function(s){return s.id===state.sess;}) : null; }
+function maxQty(){
+  if(state.act.multiSession){ var s=curSess(); return s?s.remain:0; }
+  return state.act.remain;
+}
+
+function renderConfirm(){
+  var a = state.act, body = document.getElementById('confirmBody'), html = '';
+
+  /* 识别成功横幅 */
+  html += '<div class="banner"><div class="ck">'
+    + '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 9.3l3 3L13.5 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '</div><div class="bd"><div class="l1">识别成功</div><div class="l2">签到码有效，请核对签到信息</div></div>'
+    + '<div class="pill">可签到</div></div>';
+
+  /* 活动信息卡 */
+  html += '<div class="card act-card"><div class="act-thumb">'
+    + '<svg width="30" height="30" viewBox="0 0 30 30" fill="none"><ellipse cx="15" cy="15" rx="12" ry="7" transform="rotate(-24 15 15)" fill="#fff" opacity=".92"/><ellipse cx="15" cy="15" rx="5.5" ry="3" transform="rotate(-24 15 15)" fill="#2FA36B"/></svg>'
+    + '</div><div class="info"><div class="tags"><span class="tag tag-blue">'+a.statusTag+'</span></div>'
+    + '<h1>'+a.name+'</h1><div class="sub">'+a.ticketType+'</div></div></div>';
+
+  /* 场次选择（仅多场次活动显示） */
+  if(a.multiSession){
+    html += '<div class="card"><div class="sec-hd"><span class="tt">选择签到场次</span>'
+      + '<span class="more">该活动含多个场次</span></div>';
+    a.sessions.forEach(function(s){
+      var off = !(s.status==='open' && s.remain>0);
+      var tagTxt = s.status==='wait' ? '未开始' : (s.remain<=0 ? '已签到完' : '可签到');
+      var tagCls = s.status==='wait' ? 'mini-tag wait' : (s.remain<=0 ? 'mini-tag done' : 'mini-tag');
+      var on = (s.id===state.sess) ? ' on' : '';
+      html += '<div class="sess'+on+(off?' off':'')+'" '+(off?'':'onclick="pickSess(\''+s.id+'\')"')+'>'
+        + '<div class="row1"><span class="radio"></span><span class="time">'+s.time+'</span><span class="'+tagCls+'">'+tagTxt+'</span></div>'
+        + '<div class="row2"><span>'+s.loc+'</span></div>'
+        + (s.remain>0 || s.status==='open'
+            ? '<div class="row2" style="padding-left:27px;"><span>你购买的票：'+s.remain+' 张未使用</span><span class="remain">可签到 '+s.remain+' 张</span></div>'
+            : '<div class="row2" style="padding-left:27px;"><span>本场已无未使用的票</span></div>')
+        + '</div>';
+    });
+    html += '<div style="margin-top:10px;font-size:11px;color:var(--faint);line-height:1.55;">未开始或已签到完的场次不可选择；签到仅核销所选场次的票，不影响其他场次。</div></div>';
+  }
+
+  /* 张数选择 */
+  var max = maxQty();
+  html += '<div class="card"><div class="sec-hd"><span class="tt">选择本次签到张数</span>'
+    + '<span class="more">可签到 '+max+' 张</span></div>';
+  if(max<=1){
+    html += '<div class="qty-fixed"><span>本次签到</span><span><b>1 张</b></span></div>'
+      + '<div class="qty-note">你仅有 1 张未使用的票，签到时将全部核销。</div>';
+  }else{
+    html += '<div class="qty-row"><div class="stepper">'
+      + '<button class="step-btn" id="btnMinus" onclick="stepQty(-1)"'+(state.qty<=1?' disabled':'')+'>−</button>'
+      + '<span class="qty-num" id="qtyNum">'+state.qty+'</span><span class="qty-unit">张</span>'
+      + '<button class="step-btn" onclick="stepQty(1)"'+(state.qty>=max?' disabled':'')+'>＋</button>'
+      + '</div></div>'
+      + '<div class="qty-calc"><span>'+(a.multiSession?'本场未使用 '+max+' 张':'剩余可用 '+max+' 张')+'</span>'
+      + '<span>签到后<b> '+Math.max(max-state.qty,0)+' 张</b><span class="arr">←</span>签到前 '+max+' 张</span></div>'
+      + '<div class="qty-note">'+(a.multiSession
+          ? '可选择 1-'+max+' 张，系统将自动核销你购买的该场次未使用票。'
+          : '可选择 1-'+max+' 张，系统将自动扣减卡内未使用次数，同行伙伴可一并签到。')+'</div>';
+  }
+  html += '</div>';
+
+  /* 票券信息 */
+  var remainAfter = max - state.qty;
+  html += '<div class="card info-sec"><div class="sec-tt">票券信息</div>'
+    + '<div class="kv"><span class="k">票券类型</span><span class="v">'+a.ticketType+'</span></div>'
+    + '<div class="kv"><span class="k">订单编号</span><span class="v">'+a.orderNo+'</span></div>'
+    + (a.multiSession
+        ? '<div class="kv"><span class="k">所选场次剩余（签到后）</span><span class="v hl">'+Math.max(max-state.qty,0)+' 张</span></div>'
+        : '<div class="kv"><span class="k">剩余可用（签到后）</span><span class="v hl">'+Math.max(max-state.qty,0)+' 张</span></div>')
+    + '<div class="kv"><span class="k">有效期</span><span class="v">'+a.valid+'</span></div>'
+    + '<div class="kv"><span class="k">扫码时间</span><span class="v">'+state.scanTime+'</span></div></div>';
+
+  /* 签到信息 */
+  html += '<div class="card info-sec"><div class="sec-tt">签到信息</div>'
+    + '<div class="kv"><span class="k">签到活动</span><span class="v">'+a.name+'</span></div>'
+    + (a.multiSession
+        ? '<div class="kv"><span class="k">签到场次</span><span class="v">'+(curSess()?curSess().time:'—')+'</span></div>'
+        : '<div class="kv"><span class="k">签到项目</span><span class="v">飞盘零基础成长课</span></div>')
+    + '<div class="kv"><span class="k">签到地点</span><span class="v">'+(a.multiSession?(curSess()?curSess().loc:'—'):'招商蛇口·飞盘训练场')+'</span></div>'
+    + '<div class="kv"><span class="k">签到方式</span><span class="v">现场扫码 · 自助签到</span></div>'
+    + '<div class="kv"><span class="k">签到规则</span><span class="v">可按需签到多张，按选择数量核销</span></div></div>';
+
+  /* 警示条 */
+  html += '<div class="warn"><div class="ic">!</div><div>'
+    + '<div class="w1">请确认已到达活动现场</div>'
+    + '<div class="w2" id="warnText">确认后将核销 '+state.qty+' 张票'+(a.multiSession?'（'+(curSess()?curSess().time:'')+'）':'')+'，签到成功后不可撤销</div></div></div>';
+
+  body.innerHTML = html;
+  updateBtn();
+}
+
+function pickSess(id){
+  state.sess = id; state.qty = 1; renderConfirm();
+}
+function stepQty(d){
+  var max = maxQty();
+  state.qty = Math.min(Math.max(state.qty+d,1),Math.max(max,1));
+  renderConfirm();
+}
+function updateBtn(){
+  var b = document.getElementById('btnConfirm');
+  b.textContent = '确认并签到（'+state.qty+'张）';
+  b.disabled = maxQty()<=0;
+}
+
+/* ================= 确认 & 成功弹窗 ================= */
+function confirmCheckin(){
+  if(maxQty()<=0) return;
+  var a = state.act, s = curSess(), n = state.qty;
+  var remainAfter;
+  if(a.multiSession){ s.remain -= n; s.status = s.remain<=0 ? 'done' : 'open'; remainAfter = s.remain; }
+  else { a.remain -= n; remainAfter = a.remain; }
+
+  document.getElementById('mSub').textContent = '已成功核销 '+n+' 张票';
+  document.getElementById('mQty').innerHTML = n+'<small>张</small>';
+  var rows = '<div class="kv"><span class="k">签到活动</span><span class="v">'+a.name+'</span></div>';
+  if(a.multiSession && s){
+    rows += '<div class="kv"><span class="k">签到场次</span><span class="v">'+s.time+'</span></div>';
+  }else{
+    rows += '<div class="kv"><span class="k">签到项目</span><span class="v">飞盘零基础成长课</span></div>';
+  }
+  rows += '<div class="kv"><span class="k">核销后剩余</span><span class="v">'+remainAfter+' 张</span></div>'
+    + '<div class="kv"><span class="k">签到时间</span><span class="v">'+fmtNow()+'</span></div>';
+  document.getElementById('mList').innerHTML = rows;
+
+  var btnC = document.getElementById('btnContinue');
+  if(remainAfter>0){
+    btnC.style.display='block';
+    btnC.textContent = '继续签到（'+(a.multiSession?'本场':'卡内')+'还剩 '+remainAfter+' 张）';
+  }else{
+    btnC.style.display='none';
+  }
+  document.getElementById('successMask').classList.add('on');
+  renderConfirm(); /* 刷新底层数据展示 */
+}
+function continueCheckin(){
+  document.getElementById('successMask').classList.remove('on');
+  if(state.act.multiSession && curSess().remain<=0){
+    var next = state.act.sessions.find(function(x){return x.status==='open' && x.remain>0;});
+    if(next) state.sess = next.id;
+  }
+  state.qty = 1;
+  renderConfirm();
+  window.scrollTo(0,0);
+}
+
+/* ================= 初始化（支持 hash 直达，便于截图走查） ================= */
+(function init(){
+  var h = location.hash;
+  var m = h.match(/^#(\w+)\??(.*)/);
+  go('scan');
+  if(m && m[1]==='confirm'){
+    var q = {}; (m[2]||'').split('&').forEach(function(kv){var p=kv.split('=');if(p[0])q[p[0]]=p[1];});
+    recognize(q.a==='B'?'B':'A');
+    if(q.modal==='1'){ confirmCheckin(); }
+  }
+})();
+</script>
+</body>
+</html>
