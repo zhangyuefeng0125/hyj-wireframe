@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>活动报名记录</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { background:#F2F5F7; font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif; display:flex; justify-content:center; padding:24px 0; }
+  .phone { width:375px; background:#F2F5F7; border-radius:24px; overflow:hidden; box-shadow:0 12px 48px rgba(0,40,60,.18); position:relative; padding-bottom:28px; }
+
+  .statusbar { height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; color:#303133; font-weight:600; font-size:15px; background:#fff; }
+  .statusbar .right { display:flex; gap:5px; align-items:center; }
+  .navbar { background:#fff; display:flex; align-items:center; padding:10px 14px 12px; position:relative; }
+  .nav-title { position:absolute; left:50%; transform:translateX(-50%); font-size:17px; font-weight:700; color:#303133; }
+  .capsule { margin-left:auto; width:76px; height:30px; border:1px solid #E3E6EB; border-radius:999px; display:flex; align-items:center; background:#fff; }
+  .capsule .half { flex:1; display:flex; align-items:center; justify-content:center; }
+  .capsule .divider { width:1px; height:16px; background:#E3E6EB; }
+  .back { margin-right:auto; display:flex; }
+
+  .search { margin:12px 15px 0; background:#F2F5F7; border-radius:12px; height:38px; display:flex; align-items:center; padding:0 12px; color:#909399; font-size:14px; gap:6px; }
+
+  .tabs { background:#fff; margin-top:12px; display:flex; padding:14px 0 0; border-bottom:1px solid #EBEBEB; }
+  .tab { flex:1; text-align:center; font-size:15px; color:#909399; padding-bottom:12px; position:relative; }
+  .tab.active { color:#387DEC; font-weight:700; }
+  .tab.active::after { content:''; position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:28px; height:3px; border-radius:3px; background:#387DEC; }
+
+  .list { padding:12px 12px 0; display:flex; flex-direction:column; gap:12px; }
+  .card { background:#fff; border-radius:12px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.02); }
+  .card-head { display:flex; gap:12px; }
+  .card-head .pic { width:66px; height:58px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+  .card-head .info { flex:1; min-width:0; }
+  .title-row { display:flex; align-items:flex-start; gap:8px; }
+  .card-title { font-size:16px; font-weight:800; color:#303133; line-height:1.3; flex:1; }
+  .badge { font-size:11px; border-radius:6px; padding:3px 8px; font-weight:600; white-space:nowrap; }
+  .badge.blue { color:#387DEC; background:#E0ECFF; }
+  .badge.gray { color:#909399; background:#F2F5F7; }
+  .meta { font-size:13px; color:#909399; margin-top:6px; line-height:1.5; }
+
+  .hr { height:1px; background:#EBEBEB; margin:13px 0 10px; }
+  .sec-label { font-size:12px; color:#909399; margin-bottom:8px; }
+  .session { display:flex; align-items:center; gap:10px; border-radius:10px; padding:11px 12px; margin-bottom:8px; }
+  .session.hl { background:#E0ECFF; }
+  .session.plain { background:#F2F5F7; }
+  .session .s-date { font-size:15px; font-weight:700; color:#303133; }
+  .session .s-sub { font-size:12px; color:#909399; margin-top:3px; }
+  .session .s-right { margin-left:auto; font-size:12px; color:#909399; white-space:nowrap; }
+  .loc-row { display:flex; align-items:center; gap:5px; font-size:13px; color:#909399; margin-top:2px; }
+  .card-foot { display:flex; justify-content:flex-end; gap:10px; margin-top:13px; }
+  .btn-o { color:#387DEC; background:#fff; font-size:14px; font-weight:600; border-radius:999px; padding:8px 18px; box-shadow:inset 0 0 0 1px #387DEC; }
+  .btn-ob { color:#387DEC; background:#fff; font-size:14px; font-weight:600; border-radius:999px; padding:7.5px 18px; box-shadow:inset 0 0 0 1px #387DEC; }
+  .btn-g { background:#387DEC; color:#fff; font-size:14px; font-weight:600; border-radius:999px; padding:8.5px 18px; border:none; }
+  .btn-g:active { background:#0855D1; }
+
+  .plain-row { display:flex; align-items:center; gap:9px; margin-bottom:12px; }
+  .plain-row .p-date { font-size:15px; font-weight:600; color:#303133; }
+  .home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:135px; height:5px; border-radius:3px; background:#303133; }
+
+  /* ---------- 发起退款 ---------- */
+  .refund-page { position:absolute; inset:0; background:#F2F5F7; z-index:30; display:flex; flex-direction:column; animation:rpIn .25s ease; }
+  @keyframes rpIn { from { transform:translateY(24px); opacity:0; } to { transform:none; opacity:1; } }
+  .r-scroll { flex:1; overflow-y:auto; }
+  .r-tip { margin:12px 15px 0; padding:10px 12px; background:#FFE7E6; border-radius:12px; font-size:12px; color:#F76346; line-height:1.7; }
+  .r-sess { position:relative; cursor:pointer; }
+  .r-sess:active { background:#F7F9FC; }
+  .r-sess-head { display:flex; align-items:baseline; justify-content:space-between; padding-right:26px; }
+  .r-sess-date { font-size:15px; font-weight:700; color:#303133; }
+  .r-sess-amt { font-size:15px; font-weight:800; color:#303133; }
+  .r-sess-sub { font-size:12px; color:#909399; margin-top:5px; }
+  .r-chev { position:absolute; right:14px; top:50%; transform:translateY(-50%); }
+  .r-lock-note { float:right; font-size:11px; color:#387DEC; font-weight:600; }
+  .kv { display:flex; justify-content:space-between; gap:12px; margin-top:10px; font-size:13px; }
+  .kv .k { color:#909399; flex:none; }
+  .kv .v { color:#303133; font-weight:600; text-align:right; word-break:break-all; }
+  .tk { display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid #EBEBEB; }
+  .tk:last-child { border-bottom:none; padding-bottom:2px; }
+  .tk-check { width:18px; height:18px; border-radius:50%; background:#387DEC; flex:none; display:flex; align-items:center; justify-content:center; }
+  .tk-main { flex:1; min-width:0; }
+  .tk-type { font-size:14px; font-weight:700; color:#303133; }
+  .tk-sub { font-size:12px; color:#909399; margin-top:2px; }
+  .tk-amt { font-size:14px; font-weight:700; color:#303133; }
+  .r-rules .rl { font-size:12px; color:#909399; line-height:1.8; margin-top:6px; display:flex; gap:7px; }
+  .r-rules .rl i { font-style:normal; color:#387DEC; font-weight:700; flex:none; }
+  .r-foot { flex:none; background:#fff; border-top:1px solid #EBEBEB; display:flex; align-items:center; padding:10px 15px 14px; gap:12px; }
+  .r-foot .r-amount { flex:1; display:flex; flex-direction:column; line-height:1.2; }
+  .r-foot .la { font-size:11px; color:#909399; }
+  .r-foot .va { font-size:19px; font-weight:800; color:#303133; margin-top:2px; }
+  .r-foot .va em { font-style:normal; color:#EB4A38; }
+  .r-mask { position:absolute; inset:0; z-index:40; background:rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; padding:0 36px; animation:fdIn .18s ease; }
+  @keyframes fdIn { from { opacity:0; } to { opacity:1; } }
+  .r-dialog { background:#fff; border-radius:12px; width:100%; padding:24px 22px 0; text-align:center; animation:rpIn .2s ease; }
+  .rd-title { font-size:18px; font-weight:500; color:#303133; }
+  .rd-body { font-size:16px; color:#303133; line-height:25px; margin:12px 0 24px; }
+  .rd-actions { display:flex; border-top:.5px solid #EBEBEB; margin:0 -22px; }
+  .rd-actions span { flex:1; height:53.5px; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:600; }
+  .rd-cancel { color:#909399; border-right:1px solid #EBEBEB; }
+  .rd-ok { color:#387DEC; font-weight:700; }
+  .r-toast { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:50; background:rgba(17,17,17,.85); color:#fff; font-size:13px; padding:12px 20px; border-radius:12px; line-height:1.6; text-align:center; max-width:260px; pointer-events:none; }
+  .refund-page[hidden], .r-mask[hidden], .r-toast[hidden] { display:none !important; }
+  .s-right.refunding { color:#EB4A38; font-weight:600; }
+
+  /* ---------- 退款详情 ---------- */
+  .rd-status { margin:12px 15px 0; background:#387DEC; border-radius:12px; padding:16px 16px 15px; color:#fff; }
+  .rd-status .rs-top { display:flex; align-items:center; justify-content:space-between; }
+  .rd-status .rs-label { font-size:13px; opacity:.85; }
+  .rd-status .rs-amount { font-size:24px; font-weight:800; margin-top:5px; }
+  .rd-status .rs-amount em { font-style:normal; font-size:14px; font-weight:600; margin-right:2px; }
+  .rd-status .rs-way { font-size:12px; opacity:.85; margin-top:7px; }
+  .rd-status .rs-bean { display:flex; align-items:center; gap:8px; margin-top:10px; padding-top:10px; border-top:.5px solid rgba(255,255,255,.28); font-size:12px; }
+  .rd-status .rs-bean span:first-child { opacity:.85; }
+  .rd-status .rs-bean-num { font-size:14px; font-weight:700; }
+  .rd-status .rs-bean-state { margin-left:auto; background:rgba(255,255,255,.22); border-radius:999px; padding:2px 9px; font-size:11px; font-weight:600; }
+  .rd-badge { font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.22); }
+  .steps { display:flex; margin:12px 15px 0; background:#fff; border-radius:12px; padding:18px 4px 16px; box-shadow:0 1px 6px rgba(0,0,0,.02); }
+  .steps .st { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; }
+  .steps .st:not(:first-child)::before { content:''; position:absolute; top:8px; left:calc(-50% + 18px); width:calc(100% - 36px); height:2px; background:#E7EBF1; }
+  .steps .st.on:not(:first-child)::before { background:#387DEC; }
+  .steps .dot { width:17px; height:17px; border-radius:50%; background:#E3E8EF; position:relative; z-index:1; }
+  .steps .st.on .dot { background:#387DEC; }
+  .steps .dot.ok::after { content:''; position:absolute; inset:0; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="8.5" fill="%23387DEC"/><path d="M4.6 8.7l2.6 2.6 5-5.4" fill="none" stroke="%23fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>') center/contain no-repeat; }
+  .steps .st-name { font-size:12px; color:#909399; }
+  .steps .st.on .st-name { color:#303133; font-weight:700; }
+  .steps .st-time { font-size:10px; color:#B4BAC2; line-height:1.4; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="right">
+      <svg width="18" height="12" viewBox="0 0 18 12"><g fill="#303133"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 9.6a1.7 1.7 0 011.7 1.7L8 12l-1.7-.7A1.7 1.7 0 018 9.6z" fill="#303133"/><path d="M8 5.6c1.7 0 3.2.6 4.4 1.7l-1.3 1.4A4.6 4.6 0 008 7.6c-1.2 0-2.3.4-3.1 1.1L3.6 7.3A6.5 6.5 0 018 5.6z" fill="#303133"/><path d="M8 1.5c2.8 0 5.4 1.1 7.3 2.9L14 5.8A8.4 8.4 0 008 3.5c-2.3 0-4.4.9-6 2.3L.7 4.4A10.4 10.4 0 018 1.5z" fill="#303133"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="#303133" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.8" fill="#303133"/><path d="M23 4v4a2.2 2.2 0 000-4z" fill="#303133" opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <span class="back">
+      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12.5 3.5L6 10l6.5 6.5" fill="none" stroke="#303133" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="nav-title">活动报名记录</span>
+    <div class="capsule">
+      <div class="half"><svg width="17" height="4" viewBox="0 0 17 4"><g fill="#303133"><circle cx="2" cy="2" r="1.7"/><circle cx="8.5" cy="2" r="1.7"/><circle cx="15" cy="2" r="1.7"/></g></svg></div>
+      <div class="divider"></div>
+      <div class="half"><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.6" fill="none" stroke="#303133" stroke-width="1.3"/><circle cx="7" cy="7" r="2.1" fill="#303133"/></svg></div>
+    </div>
+  </div>
+
+  <div class="search">
+    <svg width="15" height="15" viewBox="0 0 15 15"><circle cx="6.5" cy="6.5" r="5" fill="none" stroke="#909399" stroke-width="1.6"/><path d="M10.5 10.5L14 14" stroke="#909399" stroke-width="1.6" stroke-linecap="round"/></svg>
+    搜索活动名称
+  </div>
+
+  <div class="tabs">
+    <span class="tab active">全部</span>
+    <span class="tab">待参加 2</span>
+    <span class="tab">已完成</span>
+    <span class="tab">退款/取消</span>
+  </div>
+
+  <div class="list">
+
+    <!-- 卡片1 -->
+    <div class="card">
+      <div class="card-head">
+        <img class="pic" src="assets/rec1.jpg" alt="">
+        <div class="info">
+          <div class="title-row">
+            <span class="card-title">太子湾广场飞盘暴汗局</span>
+            <span class="badge blue">待参加</span>
+          </div>
+          <div class="meta">2 个场次 · 成人票×6 · 儿童票×2<br>共8张票</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="sec-label">最近场次</div>
+      <div class="session hl">
+        <svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="3.5" width="16" height="14" rx="3" fill="none" stroke="#387DEC" stroke-width="1.8"/><path d="M6.5 1.5v4M13.5 1.5v4" stroke="#387DEC" stroke-width="1.8" stroke-linecap="round"/><path d="M2 8h16" stroke="#387DEC" stroke-width="1.8"/></svg>
+        <div><div class="s-date">8月24日 周六 19:00</div><div class="s-sub">成人票×3&nbsp;&nbsp;儿童票×1</div></div>
+        <span class="s-right">4张待使用</span>
+      </div>
+      <div class="session plain">
+        <svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="3.5" width="16" height="14" rx="3" fill="none" stroke="#909399" stroke-width="1.8"/><path d="M6.5 1.5v4M13.5 1.5v4" stroke="#909399" stroke-width="1.8" stroke-linecap="round"/><path d="M2 8h16" stroke="#909399" stroke-width="1.8"/></svg>
+        <div><div class="s-date">8月31日 周六 19:00</div><div class="s-sub">成人票×3&nbsp;&nbsp;儿童票×1</div></div>
+        <span class="s-right">4张待使用</span>
+      </div>
+      <div class="loc-row">
+        <svg width="13" height="15" viewBox="0 0 13 15"><path d="M6.5.8A5.3 5.3 0 001.2 6.1c0 3.8 5.3 8.3 5.3 8.3s5.3-4.5 5.3-8.3A5.3 5.3 0 006.5.8zm0 7.4a2.2 2.2 0 110-4.4 2.2 2.2 0 010 4.4z" fill="#909399"/></svg>
+        深圳湾滨海长廊 · 太子湾广场
+      </div>
+      <div class="card-foot">
+        <span class="btn-o" id="refundEntry">发起退款</span>
+        <span class="btn-g">查看券码</span>
+      </div>
+    </div>
+
+    <!-- 卡片2 -->
+    <div class="card">
+      <div class="card-head">
+        <img class="pic" src="assets/rec2.jpg" alt="">
+        <div class="info">
+          <div class="title-row">
+            <span class="card-title">深圳湾晨跑亲子夜跑局</span>
+            <span class="badge gray">已完成</span>
+          </div>
+          <div class="meta">1 个场次 · 成人票×2 · 儿童票×1<br>已核销3/3张</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="plain-row">
+        <svg width="19" height="19" viewBox="0 0 20 20"><rect x="2" y="3.5" width="16" height="14" rx="3" fill="none" stroke="#909399" stroke-width="1.8"/><path d="M6.5 1.5v4M13.5 1.5v4" stroke="#909399" stroke-width="1.8" stroke-linecap="round"/><path d="M2 8h16" stroke="#909399" stroke-width="1.8"/></svg>
+        <span class="p-date">6月18日 周日 20:00</span>
+      </div>
+      <div class="loc-row">
+        <svg width="13" height="15" viewBox="0 0 13 15"><path d="M6.5.8A5.3 5.3 0 001.2 6.1c0 3.8 5.3 8.3 5.3 8.3s5.3-4.5 5.3-8.3A5.3 5.3 0 006.5.8zm0 7.4a2.2 2.2 0 110-4.4 2.2 2.2 0 010 4.4z" fill="#909399"/></svg>
+        深圳湾滨海长廊
+      </div>
+      <div class="card-foot">
+        <span class="btn-ob">再次报名</span>
+      </div>
+    </div>
+
+    <!-- 卡片3 -->
+    <div class="card">
+      <div class="card-head">
+        <img class="pic" src="assets/rec3.jpg" alt="">
+        <div class="info">
+          <div class="title-row">
+            <span class="card-title">飞盘零基础公开体验课</span>
+            <span class="badge gray">退款成功</span>
+          </div>
+          <div class="meta">1 个场次 · 成人票×1<br>退款金额 ¥59.00</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="plain-row">
+        <svg width="19" height="19" viewBox="0 0 20 20"><rect x="2" y="3.5" width="16" height="14" rx="3" fill="none" stroke="#909399" stroke-width="1.8"/><path d="M6.5 1.5v4M13.5 1.5v4" stroke="#909399" stroke-width="1.8" stroke-linecap="round"/><path d="M2 8h16" stroke="#909399" stroke-width="1.8"/></svg>
+        <span class="p-date">7月12日 周六 16:00</span>
+      </div>
+      <div class="loc-row">
+        <svg width="13" height="15" viewBox="0 0 13 15"><path d="M6.5.8A5.3 5.3 0 001.2 6.1c0 3.8 5.3 8.3 5.3 8.3s5.3-4.5 5.3-8.3A5.3 5.3 0 006.5.8zm0 7.4a2.2 2.2 0 110-4.4 2.2 2.2 0 010 4.4z" fill="#909399"/></svg>
+        招商玺中央草坪
+      </div>
+      <div class="card-foot">
+        <span class="btn-ob" id="refundDetailEntry">退款详情</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="home-indicator"></div>
+
+  <!-- ============ 发起退款页 ============ -->
+  <div class="refund-page" id="refundPage" hidden>
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="right">
+        <svg width="18" height="12" viewBox="0 0 18 12"><g fill="#303133"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 9.6a1.7 1.7 0 011.7 1.7L8 12l-1.7-.7A1.7 1.7 0 018 9.6z" fill="#303133"/><path d="M8 5.6c1.7 0 3.2.6 4.4 1.7l-1.3 1.4A4.6 4.6 0 008 7.6c-1.2 0-2.3.4-3.1 1.1L3.6 7.3A6.5 6.5 0 018 5.6z" fill="#303133"/><path d="M8 1.5c2.8 0 5.4 1.1 7.3 2.9L14 5.8A8.4 8.4 0 008 3.5c-2.3 0-4.4.9-6 2.3L.7 4.4A10.4 10.4 0 018 1.5z" fill="#303133"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="#303133" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.8" fill="#303133"/><path d="M23 4v4a2.2 2.2 0 000-4z" fill="#303133" opacity=".4"/></svg>
+      </div>
+    </div>
+    <div class="navbar">
+      <span class="back" id="refundBack">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12.5 3.5L6 10l6.5 6.5" fill="none" stroke="#303133" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="nav-title">发起退款</span>
+    </div>
+
+    <!-- 步骤1：选择退款场次（多场次时以场次为退款单位） -->
+    <div class="r-scroll" id="rStep1">
+      <div class="r-tip">该报名记录包含 2 个场次，退款以场次为单位；选中场次内的全部票据将整场退款，不可部分退。</div>
+      <div class="list">
+        <div class="card r-sess" data-sess="0">
+          <div class="r-sess-head">
+            <span class="r-sess-date">8月24日 周六 19:00</span>
+            <span class="r-sess-amt">¥106.00</span>
+          </div>
+          <div class="r-sess-sub">成人票×3 · 儿童票×1 · 共4张票 · 4张待使用</div>
+          <span class="r-chev"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="#C0C4CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="card r-sess" data-sess="1">
+          <div class="r-sess-head">
+            <span class="r-sess-date">8月31日 周六 19:00</span>
+            <span class="r-sess-amt">¥106.00</span>
+          </div>
+          <div class="r-sess-sub">成人票×3 · 儿童票×1 · 共4张票 · 4张待使用</div>
+          <span class="r-chev"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="#C0C4CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤2：退款详情（订单信息 + 关联票据） -->
+    <div class="r-scroll" id="rStep2" hidden>
+      <div class="list">
+        <div class="card">
+          <div class="sec-label">订单信息</div>
+          <div class="kv"><span class="k">订单号</span><span class="v">BJ20260812998821</span></div>
+          <div class="kv"><span class="k">活动</span><span class="v">太子湾广场飞盘暴汗局</span></div>
+          <div class="kv"><span class="k">场次</span><span class="v" id="rSessText">8月24日 周六 19:00</span></div>
+          <div class="kv"><span class="k">支付金额</span><span class="v">¥212.00</span></div>
+          <div class="kv"><span class="k">荟豆抵扣</span><span class="v">-¥6.00（600 荟豆）</span></div>
+          <div class="kv"><span class="k">支付时间</span><span class="v">2026-08-12 09:31:24</span></div>
+        </div>
+
+        <div class="card">
+          <div class="sec-label">关联票据<span class="r-lock-note">已全选 · 整场退款，不可更改</span></div>
+          <div class="tk">
+            <span class="tk-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l2.8 2.8L9 1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tk-main">
+              <div class="tk-type">成人票</div>
+              <div class="tk-sub">报名人：张宇 · 手机号：138****6688</div>
+            </div>
+            <span class="tk-amt">¥29.00</span>
+          </div>
+          <div class="tk">
+            <span class="tk-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l2.8 2.8L9 1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tk-main">
+              <div class="tk-type">成人票</div>
+              <div class="tk-sub">报名人：张宇 · 手机号：138****6688</div>
+            </div>
+            <span class="tk-amt">¥29.00</span>
+          </div>
+          <div class="tk">
+            <span class="tk-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l2.8 2.8L9 1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tk-main">
+              <div class="tk-type">成人票</div>
+              <div class="tk-sub">报名人：王敏 · 手机号：137****2365</div>
+            </div>
+            <span class="tk-amt">¥29.00</span>
+          </div>
+          <div class="tk">
+            <span class="tk-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l2.8 2.8L9 1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tk-main">
+              <div class="tk-type">儿童票</div>
+              <div class="tk-sub">报名人：张小雨 · 手机号：138****6688（监护人）</div>
+            </div>
+            <span class="tk-amt">¥19.00</span>
+          </div>
+        </div>
+
+        <div class="card r-rules">
+          <div class="sec-label" style="margin-bottom:0;">退款说明</div>
+          <div class="rl"><i>1.</i><span>活动开始前 2 小时（含）以上，可自行发起退款，无需审核，整场票款按原支付路径退回，预计 1-3 个工作日到账。</span></div>
+          <div class="rl"><i>2.</i><span>一个报名记录包含多个场次时，可单独退任意场次，该场次全部票据整场退款，其余场次报名不受影响。</span></div>
+          <div class="rl"><i>3.</i><span>已过自行退款时间窗口（活动开始后至活动结束后 7 天内、票据未核销或部分核销），需由平台运营人员在 PC 端发起退款，经平台审核确认后方可退款。</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部操作条 -->
+    <div class="r-foot" id="rFoot" hidden>
+      <div class="r-amount">
+        <span class="la">本次退款金额（整场 4 张票）</span>
+        <span class="va"><em>¥106.00</em></span>
+      </div>
+      <button class="btn-g" id="refundSubmit" style="flex:none;">申请退款</button>
+    </div>
+  </div>
+
+  <!-- 退款确认弹窗 -->
+  <div class="r-mask" id="refundMask" hidden>
+    <div class="r-dialog">
+      <div class="rd-title">确认申请退款？</div>
+      <div class="rd-body">「8月24日 周六 19:00」场次 4 张票将整场退款，退款无需审核，按原支付路径退回，预计 1-3 个工作日到账。</div>
+      <div class="rd-actions">
+        <span class="rd-cancel" id="refundCancel">取消</span>
+        <span class="rd-ok" id="refundOk">确认退款</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 退款提交 Toast -->
+  <div class="r-toast" id="refundToast" hidden>退款申请已提交<br>预计 1-3 个工作日原路退回</div>
+
+  <!-- ============ 退款详情页 ============ -->
+  <div class="refund-page" id="refundDetailPage" hidden>
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="right">
+        <svg width="18" height="12" viewBox="0 0 18 12"><g fill="#303133"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></g></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 9.6a1.7 1.7 0 011.7 1.7L8 12l-1.7-.7A1.7 1.7 0 018 9.6z" fill="#303133"/><path d="M8 5.6c1.7 0 3.2.6 4.4 1.7l-1.3 1.4A4.6 4.6 0 008 7.6c-1.2 0-2.3.4-3.1 1.1L3.6 7.3A6.5 6.5 0 018 5.6z" fill="#303133"/><path d="M8 1.5c2.8 0 5.4 1.1 7.3 2.9L14 5.8A8.4 8.4 0 008 3.5c-2.3 0-4.4.9-6 2.3L.7 4.4A10.4 10.4 0 018 1.5z" fill="#303133"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="#303133" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.8" fill="#303133"/><path d="M23 4v4a2.2 2.2 0 000-4z" fill="#303133" opacity=".4"/></svg>
+      </div>
+    </div>
+    <div class="navbar">
+      <span class="back" id="refundDetailBack">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M12.5 3.5L6 10l6.5 6.5" fill="none" stroke="#303133" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="nav-title">退款详情</span>
+    </div>
+
+    <div class="r-scroll">
+      <div class="rd-status">
+        <div class="rs-top">
+          <span class="rs-label">退款金额</span>
+          <span class="rd-badge">退款成功</span>
+        </div>
+        <div class="rs-amount"><em>¥</em>59.00</div>
+        <div class="rs-way">已退回微信支付（原支付路径） · 3个工作日内到账，实际1个工作日到账</div>
+        <div class="rs-bean">
+          <span>荟豆返还</span>
+          <span class="rs-bean-num">100 荟豆</span>
+          <span class="rs-bean-state">已到账</span>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="st on">
+          <span class="dot ok"></span>
+          <span class="st-name">提交申请</span>
+          <span class="st-time">07-10 14:22</span>
+        </div>
+        <div class="st on">
+          <span class="dot ok"></span>
+          <span class="st-name">退款受理</span>
+          <span class="st-time">07-10 14:22</span>
+        </div>
+        <div class="st on">
+          <span class="dot ok"></span>
+          <span class="st-name">退款成功</span>
+          <span class="st-time">07-11 09:15</span>
+        </div>
+      </div>
+
+      <div class="list">
+        <div class="card">
+          <div class="sec-label">退款单信息</div>
+          <div class="kv"><span class="k">退款单号</span><span class="v">TK2026071014220876</span></div>
+          <div class="kv"><span class="k">关联订单号</span><span class="v">BJ2026070811355566</span></div>
+          <div class="kv"><span class="k">活动</span><span class="v">飞盘零基础公开体验课</span></div>
+          <div class="kv"><span class="k">场次</span><span class="v">7月12日 周六 16:00</span></div>
+          <div class="kv"><span class="k">退款类型</span><span class="v">用户自行退款（活动开始前2小时以上）</span></div>
+          <div class="kv"><span class="k">荟豆返还</span><span class="v">返还 100 荟豆（已到账）</span></div>
+          <div class="kv"><span class="k">支付金额</span><span class="v">¥59.00（微信支付）</span></div>
+          <div class="kv"><span class="k">支付时间</span><span class="v">2026-07-08 11:36:42</span></div>
+        </div>
+
+        <div class="card">
+          <div class="sec-label">关联票据<span class="r-lock-note">1 张 · 整场退款</span></div>
+          <div class="tk">
+            <span class="tk-check"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l2.8 2.8L9 1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="tk-main">
+              <div class="tk-type">成人票</div>
+              <div class="tk-sub">报名人：张宇 · 手机号：138****6688</div>
+            </div>
+            <span class="tk-amt">¥59.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var page = document.getElementById('refundPage');
+  var step1 = document.getElementById('rStep1');
+  var step2 = document.getElementById('rStep2');
+  var foot = document.getElementById('rFoot');
+  var mask = document.getElementById('refundMask');
+  var toast = document.getElementById('refundToast');
+  var sessText = document.getElementById('rSessText');
+  var dlgBody = mask.querySelector('.rd-body');
+  var refunding = { 0: false, 1: false };
+  var current = 0;
+
+  function open() {
+    page.hidden = false;
+    showStep(1);
+  }
+  function showStep(n) {
+    step1.hidden = n !== 1;
+    step2.hidden = n !== 2;
+    foot.hidden = n !== 2;
+    page.querySelector('.r-scroll').scrollTop = 0;
+    if (n === 1) page.querySelectorAll('.r-sess').forEach(function (c, i) { c.hidden = refunding[i]; });
+  }
+  function close() { page.hidden = true; mask.hidden = true; }
+
+  document.getElementById('refundEntry').addEventListener('click', open);
+  document.getElementById('refundBack').addEventListener('click', function () {
+    if (!step2.hidden) showStep(1); else close();
+  });
+
+  document.querySelectorAll('.r-sess').forEach(function (card) {
+    card.addEventListener('click', function () {
+      current = +card.dataset.sess;
+      var date = card.querySelector('.r-sess-date').textContent;
+      sessText.textContent = date;
+      dlgBody.textContent = '「' + date + '」场次 4 张票将整场退款，退款无需审核，按原支付路径退回，预计 1-3 个工作日到账。';
+      showStep(2);
+    });
+  });
+
+  document.getElementById('refundSubmit').addEventListener('click', function () { mask.hidden = false; });
+  document.getElementById('refundCancel').addEventListener('click', function () { mask.hidden = true; });
+  document.getElementById('refundOk').addEventListener('click', function () {
+    mask.hidden = true;
+    page.hidden = true;
+    refunding[current] = true;
+    var row = document.querySelectorAll('.card')[0].querySelectorAll('.s-right')[current];
+    row.textContent = '退款中';
+    row.classList.add('refunding');
+    toast.hidden = false;
+    setTimeout(function () { toast.hidden = true; }, 2400);
+  });
+
+  var detailPage = document.getElementById('refundDetailPage');
+  document.getElementById('refundDetailEntry').addEventListener('click', function () { detailPage.hidden = false; });
+  document.getElementById('refundDetailBack').addEventListener('click', function () { detailPage.hidden = true; });
+})();
+</script>
+</body>
+</html>
